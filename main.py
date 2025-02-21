@@ -1,13 +1,12 @@
-from selenium.webdriver.common.by import By
-
 import data
-import retrieve_phone_code
+import utils
 from selenium import webdriver
 from selenium.webdriver import Keys
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from UrbanRoutesPage import UrbanRoutesPage
-
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
 
 
 class TestUrbanRoutes:
@@ -36,15 +35,18 @@ class TestUrbanRoutes:
         routes_page.click_on_call_a_taxi_button()
 
     def test_fill_phone_number(self):
-        self.test_set_route()
+        #self.test_set_route()
+        self.test_select_comfort_rate()
         routes_page = UrbanRoutesPage(self.driver)
         routes_page.enter_phone_number(data.phone_number)
 
     def test_fill_sms_code(self):
         self.test_fill_phone_number()
         routes_page = UrbanRoutesPage(self.driver)
-        sms_code = retrieve_phone_code
+        sms_code = utils.retrieve_phone_code()
         routes_page.enter_sms_code(sms_code)
+        #sendkeys para usar el code de retrieve_phone_code
+        #para llamarlo en el codigo seria utils.retrieve_phone_code
 
     def test_fill_card(self):
         self.test_fill_sms_code()

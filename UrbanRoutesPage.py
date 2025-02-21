@@ -1,12 +1,13 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions
+from selenium.webdriver.support import expected_conditions as EC
 import data
 
 
 class UrbanRoutesPage:
     from_field = (By.ID, 'from')
     to_field = (By.ID, 'to')
+
     call_a_taxi_button = (By.CSS_SELECTOR, ".button.round")
     comfort_rate_icon = (By.XPATH, "//button[contains(text(), 'Comfort')]")
     selected_tariff = (By.XPATH, "//div[@class='tariff-picker shown']//div[@class='tariff-cards']//div[@class='tcard active']//div[@class='tcard-title']")
@@ -39,7 +40,7 @@ class UrbanRoutesPage:
 
     def set_from(self, from_address):
         WebDriverWait(self.driver, 5).until(
-            expected_conditions.presence_of_element_located(self.from_field)
+           EC.presence_of_element_located(self.from_field)
         ).send_keys(from_address)
 
     def set_to(self, to_address):
@@ -60,7 +61,7 @@ class UrbanRoutesPage:
 
     def get_call_a_taxi_button(self):
         return WebDriverWait(self.driver, 5).until(
-            expected_conditions.element_to_be_clickable(self.call_a_taxi_button))
+            EC.element_to_be_clickable(self.call_a_taxi_button))
 
     def click_on_call_a_taxi_button(self):
         self.get_call_a_taxi_button().click()
