@@ -35,9 +35,9 @@ class TestUrbanRoutes:
         routes_page.click_on_call_a_taxi_button()
 
     def test_fill_phone_number(self):
-        #self.test_set_route()
         self.test_select_comfort_rate()
         routes_page = UrbanRoutesPage(self.driver)
+        routes_page.phone_number_field()
         routes_page.enter_phone_number(data.phone_number)
 
     def test_fill_sms_code(self):

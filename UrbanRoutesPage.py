@@ -8,8 +8,8 @@ class UrbanRoutesPage:
     from_field = (By.ID, 'from')
     to_field = (By.ID, 'to')
 
-    call_a_taxi_button = (By.CSS_SELECTOR, ".button.round")
-    comfort_rate_icon = (By.XPATH, "//button[contains(text(), 'Comfort')]")
+    call_a_taxi_button = (By.XPATH, "//button[contains(text(), 'Pedir un taxi')]")
+    comfort_rate_icon = (By.XPATH, "//div[@class='tcard-title' and text()='Comfort']")
     selected_tariff = (By.XPATH, "//div[@class='tariff-picker shown']//div[@class='tariff-cards']//div[@class='tcard active']//div[@class='tcard-title']")
 
     phone_number_field = (By.CLASS_NAME, "np-text")
@@ -45,7 +45,7 @@ class UrbanRoutesPage:
 
     def set_to(self, to_address):
         WebDriverWait(self.driver, 5).until(
-            expected_conditions.presence_of_element_located(self.to_field)
+            EC.presence_of_element_located(self.to_field)
         ).send_keys(to_address)
 
     def get_from(self):
@@ -58,7 +58,6 @@ class UrbanRoutesPage:
         self.set_from(from_address)
         self.set_to(to_address)
 
-
     def get_call_a_taxi_button(self):
         return WebDriverWait(self.driver, 5).until(
             EC.element_to_be_clickable(self.call_a_taxi_button))
@@ -69,59 +68,59 @@ class UrbanRoutesPage:
 
     def get_comfort_rate_icon(self):
         return WebDriverWait(self.driver, 5).until(
-            expected_conditions.element_to_be_clickable(self.comfort_rate_icon))
+            EC.element_to_be_clickable(self.comfort_rate_icon))
 
     def click_on_comfort_rate_icon(self):
             WebDriverWait(self.driver, 5).until(
-                expected_conditions.element_to_be_clickable(self.comfort_rate_icon)
+                EC.element_to_be_clickable(self.comfort_rate_icon)
             ).click()
 
     def get_phone_number_field(self):
             WebDriverWait(self.driver, 5).until(
-            expected_conditions.visibility_of_element_located(self.phone_number_field)
+            EC.visibility_of_element_located(self.phone_number_field)
         ).click()
 
     def enter_phone_number(self, phone_number):
             WebDriverWait(self.driver, 5).until(
-                expected_conditions.new_window_is_opened(self.phone_number_field_popup)
-            ).send_keys(data.phone_number)
+                EC.visibility_of_element_located(self.phone_number_field_popup)
+            ).send_keys(phone_number)
 
     def click_on_next_button(self):
         self.driver.find_element(*self.next_button).click()
 
     def enter_sms_code(self, code):
             WebDriverWait(self.driver, 5).until(
-                expected_conditions.presence_of_element_located(self.sms_code_field)
+                EC.presence_of_element_located(self.sms_code_field)
             ).send_keys(code)
             self.driver.find_element(*self.confirm_phone_button).click()
 
     def add_credit_card(self, card_number, cvv):
             WebDriverWait(self.driver, 5).until(
-                expected_conditions.element_to_be_clickable(self.payment_method_button)
+                EC.element_to_be_clickable(self.payment_method_button)
             ).click()
             WebDriverWait(self.driver, 5).until(
-                expected_conditions.element_to_be_clickable(self.add_card_button)
+                EC.element_to_be_clickable(self.add_card_button)
             ).click()
             WebDriverWait(self.driver, 5).until(
-                expected_conditions.presence_of_element_located(self.card_number_field)
+                EC.presence_of_element_located(self.card_number_field)
             ).send_keys(card_number)
             WebDriverWait(self.driver, 5).until(
-                expected_conditions.presence_of_element_located(self.cvv_field)
+                EC.presence_of_element_located(self.cvv_field)
             ).send_keys(cvv)
             self.driver.find_element(*self.confirm_credit_card).click()
             WebDriverWait(self.driver, 5).until(
-                expected_conditions.element_to_be_clickable(self.close_button_popup)
+                EC.element_to_be_clickable(self.close_button_popup)
             ).click()
 
     def confirm_trip(self):
             WebDriverWait(self.driver, 5).until(
-                expected_conditions.element_to_be_clickable(self.book_cab_button)
+                EC.element_to_be_clickable(self.book_cab_button)
             ).click()
             WebDriverWait(self.driver, 5).until(
-                expected_conditions.presence_of_element_located(self.order_wait_screen)
+                EC.presence_of_element_located(self.order_wait_screen)
             )
             return WebDriverWait(self.driver, 5).until(
-                expected_conditions.presence_of_element_located(self.trip_confirmation)
+                EC.presence_of_element_located(self.trip_confirmation)
             ).text
 
 
