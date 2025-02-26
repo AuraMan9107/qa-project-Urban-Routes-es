@@ -15,7 +15,7 @@ class UrbanRoutesPage:
 
     phone_number_field = (By.CLASS_NAME, "np-text")
     phone_number_field_popup = (By.ID, "phone")
-    next_button = (By.XPATH, "//button[text()='Siguiente']")
+    next_button = (By.XPATH, "//button[contains(text(), 'Siguiente')]")
     sms_code_field = (By.ID,"code")
     confirm_phone_button = (By.XPATH, "//button[text()='Confirmar']")
 
