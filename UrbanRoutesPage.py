@@ -2,6 +2,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import data
+from selenium.webdriver import Keys
+
 
 
 class UrbanRoutesPage:
@@ -10,30 +12,29 @@ class UrbanRoutesPage:
 
     call_a_taxi_button = (By.XPATH, "//button[contains(text(), 'Pedir un taxi')]")
     comfort_rate_icon = (By.XPATH, "//div[@class='tcard-title' and text()='Comfort']")
-    selected_tariff = (By.XPATH, "//div[@class='tariff-picker shown']//div[@class='tariff-cards']//div[@class='tcard active']//div[@class='tcard-title']")
 
     phone_number_field = (By.CLASS_NAME, "np-text")
     phone_number_field_popup = (By.ID, "phone")
-    next_button = (By.CLASS_NAME, "button full")
+    next_button = (By.XPATH, "//button[text()='Siguiente']")
     sms_code_field = (By.ID,"code")
-    confirm_phone_button = (By.XPATH, "//div[@class='section active']//form//div[@class='buttons']//button[@type='submit']")
+    confirm_phone_button = (By.XPATH, "//button[text()='Confirmar']")
 
-    payment_method_button = (By.CLASS_NAME, ".pp-button")
-    add_card_button = (By.CSS_SELECTOR, ".pp-plus-container")
+    payment_method_button = (By.CSS_SELECTOR, "div.pp-button.filled")
+    add_card_button = (By.CSS_SELECTOR, "div.pp-row.disabled")
     card_number_field = (By.ID, "number")
     cvv_field = (By.NAME, "code")
-    confirm_credit_card = (By.XPATH, "//div[@class='pp-buttons']//button[@type='submit']")
-    close_button_popup = (By.XPATH,
-        "//div[@class='payment-picker open']//div[@class='modal']//div[@class='section active']//button[@class='close-button section-close']")
+    add_credit_card_button = (By.CSS_SELECTOR, "button.button.full")
+    close_button_popup = (By.XPATH, "//div[contains(@class, 'payment-picker') and contains(@class, 'open')]//div[@class='modal']//div[contains(@class, 'section') and contains(@class, 'active')]//button")
 
     message_for_driver_field = (By.ID, "comment")
     requirements_button = (By.CLASS_NAME, "reqs-head")
     blankets_and_handkerchief_slider = (By.XPATH, "//div[@class='r-sw-container']/*[contains(text(),'Manta')]/..//div[@class='switch']")
     add_icecream = (By.XPATH,  "//div[contains(text(),'Helado')]/..//div[@class='counter-plus']")
-    order_wait_screen = (By.XPATH, "//div[@class='order shown']")
-    order_wait_screen_title = (By.XPATH, "//div[@class='order shown']//div[@class='order-body']//div[@class='order-header']//div[@class='order-header-title']")
+
+    waiting_order_screen = (By.XPATH, "//div[@class='order shown']")
+    waiting_order_screen_title = (By.XPATH, "//div[@class='order shown']//div[@class='order-body']//div[@class='order-header']//div[@class='order-header-title']")
     trip_confirmation = (By.XPATH, "//div[@class='order shown']//div[@class='order-body']//div[@class='order-header']//div[@class='order-number']")
-    book_cab_button = (By.CLASS_NAME, 'smart-button-main')
+    order_a_taxi_button = (By.CLASS_NAME, 'smart-button-main')
 
     def __init__(self, driver):
         self.driver = driver
@@ -94,33 +95,47 @@ class UrbanRoutesPage:
             ).send_keys(code)
             self.driver.find_element(*self.confirm_phone_button).click()
 
-    def add_credit_card(self, card_number, cvv):
-            WebDriverWait(self.driver, 5).until(
+    def get_payment_button(self):
+        return WebDriverWait(self.driver, 5).until(
                 EC.element_to_be_clickable(self.payment_method_button)
-            ).click()
-            WebDriverWait(self.driver, 5).until(
-                EC.element_to_be_clickable(self.add_card_button)
-            ).click()
-            WebDriverWait(self.driver, 5).until(
-                EC.presence_of_element_located(self.card_number_field)
-            ).send_keys(card_number)
-            WebDriverWait(self.driver, 5).until(
-                EC.presence_of_element_located(self.cvv_field)
-            ).send_keys(cvv)
-            self.driver.find_element(*self.confirm_credit_card).click()
-            WebDriverWait(self.driver, 5).until(
-                EC.element_to_be_clickable(self.close_button_popup)
-            ).click()
-
-    def confirm_trip(self):
-            WebDriverWait(self.driver, 5).until(
-                EC.element_to_be_clickable(self.book_cab_button)
-            ).click()
-            WebDriverWait(self.driver, 5).until(
-                EC.presence_of_element_located(self.order_wait_screen)
             )
-            return WebDriverWait(self.driver, 5).until(
-                EC.presence_of_element_located(self.trip_confirmation)
-            ).text
+
+    def click_on_payment_button(self):
+        self.get_payment_button().click()
+
+    def get_add_card_button(self):
+        return WebDriverWait(self.driver,5).until(
+            EC.presence_of_element_located(self.add_card_button)
+        )
+
+    def click_on_add_card_button(self):
+        self.get_add_card_button().click()
+
+    def get_card_number_field(self):
+        return WebDriverWait(self.driver, 5).until(
+            EC.presence_of_element_located(self.card_number_field)
+        )
+
+    def set_card_number(self):
+        self.get_card_number_field().send_keys(data.card_number)
+
+    def get_card_code_number(self):
+        return WebDriverWait(self.driver,5).until(
+            EC.presence_of_element_located(self.cvv_field)
+        )
+    def set_card_code_number(self):
+        self.get_card_code_number().send_keys(data.card_code)
+
+    def get_add_credit_card_button(self):
+        return WebDriverWait(self.driver,5).until(
+            EC.element_to_be_clickable(self.add_credit_card_button)
+        )
+    def click_on_add_credit_card_button(self):
+        self.get_card_code_number().send_keys(Keys.TAB)
+        self.get_add_credit_card_button().click()
+
+
+
+
 
 
