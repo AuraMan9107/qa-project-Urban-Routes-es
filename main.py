@@ -1,12 +1,10 @@
 import data
 import utils
 from selenium import webdriver
-from selenium.webdriver import Keys
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from UrbanRoutesPage import UrbanRoutesPage
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.by import By
+
 
 
 class TestUrbanRoutes:
@@ -47,38 +45,44 @@ class TestUrbanRoutes:
     def test_fill_card(self):
         routes_page = UrbanRoutesPage(self.driver)
         routes_page.click_on_payment_button()
+        routes_page.click_on_add_card_button()
         routes_page.set_card_number()
         routes_page.set_card_code_number()
-        routes_page.click_on_add_card_button()
+        routes_page.click_on_add_credit_card_button()
+        routes_page.click_on_close_button()
 
-
-
-        #para los assert tengo que encontrar como se debe ver la tarjeta cuando ya se agrego una tarjeta.
-    """
     def test_comment_for_driver(self):
         routes_page = UrbanRoutesPage(self.driver)
-        routes_page.driver.find_element(*routes_page.message_for_driver_field).send_keys(data.message_for_driver)
+        routes_page.set_message_for_driver()
 
     def test_order_blanket_and_handkerchiefs(self):
         routes_page = UrbanRoutesPage(self.driver)
-        routes_page.driver.find_element(*routes_page.requirements_button).click()
-        routes_page.driver.find_element(*routes_page.blankets_and_handkerchief_slider).click()
+        routes_page.click_on_blankets_and_handkerchief_slider()
+
+    # routes_page.get_requirements_button()
+    # routes_page.click_on_requirements_button()
+
+
 
     def test_order_2_ice_creams(self):
         routes_page = UrbanRoutesPage(self.driver)
-        routes_page.driver.find_element(*routes_page.add_icecream).click()
-        routes_page.driver.find_element(*routes_page.add_icecream).click()  # Segundo clic para pedir 2 helados
+        routes_page.click_on_ice_cream_option()
+        routes_page.click_on_ice_cream_option() #Segundo click para pedir dos helados
+        assert routes_page.get_two_ice_cream_count()==2
+
+
 
     def test_car_search_model_appears(self):
         routes_page = UrbanRoutesPage(self.driver)
-        assert routes_page.driver.find_element(*routes_page.waiting_order_screen_title).is_displayed()
+        routes_page.click_on_request_a_taxi_button()
 
-    def test_driver_info_appears(self):
-        routes_page = UrbanRoutesPage(self.driver)
-        trip_number = routes_page.confirm_trip()
-        assert trip_number is not None and trip_number.strip() != "", "No se generó el número de viaje."
-        
-    """
+
+
+
+    #def test_driver_info_appears(self):
+        #routes_page = UrbanRoutesPage(self.driver)
+
+    #assert trip_number is not None and trip_number.strip() != "", "No se generó el número de viaje."
 
     @classmethod
     def teardown_class(cls):
