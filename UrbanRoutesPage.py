@@ -12,6 +12,7 @@ class UrbanRoutesPage:
 
     call_a_taxi_button = (By.XPATH, "//button[contains(text(), 'Pedir un taxi')]")
     comfort_rate_icon = (By.XPATH, "//div[@class='tcard-title' and text()='Comfort']")
+    selected_tariff = (By.XPATH, '//button[@data-for="tariff-card-4"]')
 
     phone_number_field = (By.CLASS_NAME, "np-text")
     phone_number_field_popup = (By.ID, "phone")
@@ -25,18 +26,21 @@ class UrbanRoutesPage:
     cvv_field = (By.NAME, "code")
     add_credit_card_button = (By.XPATH, "//button[text()='Agregar']")
     close_button_popup = (By.XPATH, "//div[contains(@class, 'payment-picker') and contains(@class, 'open')]//div[@class='modal']//div[contains(@class, 'section') and contains(@class, 'active')]//button")
+    added_card = (By.ID, "card-1")
 
     message_for_driver_field = (By.ID, "comment")
-    requirements_button = (By.CLASS_NAME, "reqs-head")
-    blankets_and_handkerchief_slider = (By.XPATH, "//div[@class='r-sw-container']/*[contains(text(),'Manta')]/..//div[@class='switch']")
+
+    blankets_and_handkerchief_option = (By.XPATH,  "//*[@id='root']/div/div[3]/div[3]/div[2]/div[2]/div[4]/div[2]/div[1]/div/div[2]/div/span")
+    blanket_and_handkerchief_checkbox = (By.XPATH,'//span[@class="slider round"]')
+
     add_icecream = (By.XPATH,  "//div[contains(text(),'Helado')]/..//div[@class='counter-plus']")
     ice_cream_count = (By.XPATH, "//div[@class='counter-value' and text()='2']")
 
     order_a_taxi_button = (By.CLASS_NAME, 'smart-button-main')
-
     waiting_order_screen = (By.XPATH, "//div[@class='order shown']")
-    waiting_order_screen_title = (By.XPATH, "//div[@class='order shown']//div[@class='order-body']//div[@class='order-header']//div[@class='order-header-title']")
     trip_confirmation = (By.XPATH, "//div[@class='order shown']//div[@class='order-body']//div[@class='order-header']//div[@class='order-number']")
+
+
 
 
     def __init__(self, driver):
@@ -77,12 +81,18 @@ class UrbanRoutesPage:
 
     def get_comfort_rate_icon(self):
         return WebDriverWait(self.driver, 5).until(
-            EC.element_to_be_clickable(self.comfort_rate_icon))
+            EC.element_to_be_clickable(self.comfort_rate_icon)
+        )
 
     def click_on_comfort_rate_icon(self):
             WebDriverWait(self.driver, 5).until(
                 EC.element_to_be_clickable(self.comfort_rate_icon)
             ).click()
+
+    def is_comfort_selected(self):
+        return WebDriverWait(self.driver,5).until(
+            EC.visibility_of_element_located(self.selected_tariff)
+        )
 
 #Metodos para llenar la tarjeta de número de teléfono
 
@@ -96,6 +106,11 @@ class UrbanRoutesPage:
                 EC.visibility_of_element_located(self.phone_number_field_popup)
             ).send_keys(phone_number)
 
+    def is_correct_phone_number_popup(self):
+        return WebDriverWait(self.driver,5).until(
+            EC.presence_of_element_located(self.phone_number_field_popup)
+        )
+
     def click_on_next_button(self):
         self.driver.find_element(*self.next_button).click()
 
@@ -105,7 +120,7 @@ class UrbanRoutesPage:
             ).send_keys(code)
             self.driver.find_element(*self.confirm_phone_button).click()
 
-    #Métodos para agregar una tarjeta de credito
+      #Métodos para agregar una tarjeta de credito
 
     def get_payment_button(self):
         return WebDriverWait(self.driver, 5).until(
@@ -153,6 +168,11 @@ class UrbanRoutesPage:
     def click_on_close_button(self):
         self.get_close_button().click()
 
+    def card_is_added(self):
+        return WebDriverWait(self.driver,5).until(
+            EC.presence_of_element_located(self.added_card)
+        )
+
 #Métodos para escribir un mensaje al conductor
 
     def get_message_for_driver_field(self):
@@ -163,24 +183,16 @@ class UrbanRoutesPage:
     def set_message_for_driver(self):
         self.get_message_for_driver_field().send_keys(data.message_for_driver)
 
-#Métodos para abrir los requerimientos
-
-    def get_requirements_button(self):
-        return WebDriverWait(self.driver,5).until(
-            EC.element_to_be_clickable(self.requirements_button)
-        )
-
-    def click_on_requirements_button(self):
-        self.get_requirements_button().click()
 
 #Métodos para elegir la opción de manta y pañuelos
 
     def get_blankets_and_handkerchief_slider(self):
+        self.driver.find_element(*self.blankets_and_handkerchief_option).click()
+
+    def is_blankets_and_handkerchief_selected(self):
         return WebDriverWait(self.driver,5).until(
-            EC.element_to_be_clickable(self.blankets_and_handkerchief_slider)
+            EC.visibility_of_element_located(self.blanket_and_handkerchief_checkbox)
         )
-    def click_on_blankets_and_handkerchief_slider(self):
-        self.get_blankets_and_handkerchief_slider().click()
 
 #Métodos para agregar helados
 
@@ -192,11 +204,13 @@ class UrbanRoutesPage:
     def click_on_ice_cream_option(self):
         self.get_ice_cream_option().click()
 
-    def get_two_ice_cream_count(self):
+    def two_ice_cream_added(self):
         return WebDriverWait(self.driver,5).until(
             EC.presence_of_element_located(self.ice_cream_count)
         )
 
+
+#Métodos para pedir el taxi, después de llenar los requerimientos
 
     def get_request_a_taxi_button(self):
         return WebDriverWait(self.driver,5).until(
@@ -213,6 +227,15 @@ class UrbanRoutesPage:
         return WebDriverWait(self.driver,5).until(
             EC.presence_of_element_located(self.waiting_order_screen)
         )
+
+
+    def get_order_number(self):
+        return WebDriverWait(self.driver,50).until(
+            EC.presence_of_element_located(self.trip_confirmation)
+        )
+
+
+
 
 
 
